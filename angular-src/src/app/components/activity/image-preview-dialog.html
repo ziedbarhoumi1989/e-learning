@@ -1,0 +1,18 @@
+<mat-divider></mat-divider>
+<div *ngIf="data" style="text-align: center; height: auto;" mat-dialog-content>
+  <img style="width: 700px; height: 450px;" src="/api/image/{{data.image}}">
+</div>
+<!-- <div mat-dialog-actions>
+  <button mat-button-stroked mat-dialog-close cdkFocusInitial>Ok</button>
+</div>
+ -->
+
+<style>
+	div{
+		max-height: 75vh;
+		padding: 0px 0px 0px 0px;
+	}
+	.mat-dialog-container{
+		padding: 0px;
+	}
+</style>

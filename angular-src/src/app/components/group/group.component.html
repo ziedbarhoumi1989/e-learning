@@ -1,0 +1,225 @@
+
+<div id="mainDiv">
+<mat-card class="main" id="main" >
+	 <mat-tab-group style="text-transform: capitalize; height: 100%;" (selectedTabChange)="tabChange($event)">
+ 	<mat-tab *ngFor="let task of activity?.tasks; let i = index" label='Task {{i + 1}}'>
+        <div class="card-body" *ngIf="task.task_type == 'image'">
+
+<ngx-flip id="flipCard" [flip]="flipDiv" >
+   <div class="wrapper" front style="height: 310px; background-color: white; border-style: ridge; text-align: center;">
+      <img style="width: 500px; height: 300px; margin-left: 0;" src="/api/image/{{images[i]?.originalname}}" (click)="openPreviewDialog(i)" class="img-thumbnail">
+      <i id="flipIcon" matTooltip="Flip" (click)="flipDivFunc()" style="font-size: 25px; font-weight: bolder;" class="glyphicon glyphicon-refresh"></i>
+      <i id="helpIcon" (click)="openImageHelpDialog()" matTooltip="Help" class="fa fa-question" style="font-size: 25px; font-weight: bolder;"></i>
+    </div>
+   <div class="wrapper" style="height: 300px; background-color: whitesmoke; border-style: ridge; text-align: center;" back>
+    <div id="taskInfoDiv" style="text-align: left; font-size: 18px; margin-bottom: 22%;">
+      <h3 style="margin-left: 5px;">{{task.task_name}}</h3>
+      <mat-divider></mat-divider>
+      <blockquote style="margin-left: 10px;" style="margin-top: 20px;"><i>{{task.task_desc}}</i></blockquote>
+    </div>
+  <div id="flipCardButtons">
+  <a href="/annotate/{{activity.activityType}}/{{activityName}}/{{task.task_name}}" class="btn btn-primary" *ngIf="!checkSubmitted(task.task_name) && !isTeacher">Annotate</a>
+  <button class="btn btn-primary" [matMenuTriggerFor]="menu" *ngIf="checkSubmitted(task.task_name) || isTeacher">View Submissions</button>
+    <mat-menu #menu="matMenu">
+      <div *ngIf="submissionArray.length > 0">
+      <a href="view/annotations/{{submission.email}}/{{activityName}}/{{task.task_name}}" mat-menu-item *ngFor="let submission of submissionArray">{{submission.first}} {{submission.last}}</a>
+    </div>
+    <p style="font-size: 20px; text-align: center;" *ngIf="submissionArray.length == 0">No submissions have been made yet!</p>
+    </mat-menu>
+  <button class="btn btn-danger" (click)="flipDivFunc()">Back</button>
+  </div>
+</div>
+ </ngx-flip>
+
+</div>
+
+	 <div class="card" *ngIf="task.task_type == 'text'" style="border-style: none;">
+  <div id="textCardBody" class="card-body" style="text-align: left; min-height: 200px;">
+    <i style="float: right; font-size: 30px;" matTooltip="Help" class="fa fa-question"></i>
+      <div style="background-color: white; padding-top: 0px; margin-bottom: 15px;">
+  <div>
+    <h2 class="display-4">{{task.task_name}}</h2>
+    <mat-divider></mat-divider>
+    <blockquote style="margin-top: 50px;" class="lead"[innerHtml]="task.task_desc"></blockquote>
+  </div>
+</div>
+
+  </div>
+</div>
+	</mat-tab>
+ </mat-tab-group>
+
+<mat-card id="commentDiv">
+  <div id="heading" style="border-bottom-style: ridge; ">
+    <h3 style="padding-left: 16px; margin-top: 0px;"> Comments&nbsp;&nbsp;<i class="fa fa-comments"></i>&nbsp;{{comments?.length}}
+    <a style="color: black; float: right; padding-right: 5px;"><i matTooltip="Add a Comment" (click)="addComment()" class="glyphicon glyphicon-plus"></i></a>
+  </h3>
+  </div>
+  <div>
+    <p style="text-align: center; margin-top: 20px;" *ngIf="comments.length == 0"><i>No comments yet! Be the first to contribute...</i></p>
+    <mat-list style="min-height: 100px;" *ngIf="comments.length > 0">
+      <mat-list-item *ngFor="let comment of comments; let i = index" style="height: 100px; height: auto; border-bottom-style: ridge;">
+        <div style="width: 100%;">
+        <h5 style="float: right;"><i>{{ comment.time | date:'EEEE, MMMM d, h:mm:ss a' }} </i></h5>
+        <h4 style="text-transform: capitalize;">{{comment.first}} {{comment.last}}</h4>
+        <div>
+          <a><i matTooltip="Delete Comment" style="float: right; color: black; font-weight: bold;" class="glyphicon glyphicon-trash" (click)="delete(i)"></i></a>
+        <p [innerHTML]="comment.comment">
+        </p>
+      </div>
+      </div>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div style="height: 200px;" *ngIf="add">
+   <app-ngx-editor [config]="editorConfig" height="200px" minHeight="200px" [placeholder]="placeholder" [spellcheck]="true" [(ngModel)]="htmlContent" name="htmlContent"></app-ngx-editor>
+   <div>
+   <button type="button" class="btn btn-primary" style="float: right;" (click)="submitComment(htmlContent)">Submit</button>
+   <button type="button" class="btn btn-warning" style="float: right;" (click)="clear()">Clear</button>
+   <button type="button" class="btn btn-danger" style="float: right;" (click)="cancel()">Cancel</button>
+  </div>
+</div>
+</mat-card>
+
+</mat-card>
+
+<mat-card class="sidenav" style="padding-top: 0px;">
+	<div style="border-bottom-style: ridge; padding-top: 20px; background-color: whitesmoke;">
+	<h4 style="padding-left: 16px; margin-top: 0px;">Group Members</h4>
+	</div>
+  <div>
+	<mat-list style="padding-top: 0px;">
+		<mat-list-item *ngFor="let student of students" style="border-bottom-style: ridge; text-transform: capitalize;" >
+			<div>
+			{{student.first}} {{student.last}}
+		</div>
+		</mat-list-item>
+</mat-list>
+</div>
+</mat-card>
+
+
+
+
+
+<style>
+ body{
+    background-color: rgb(245,245,245);
+  }
+
+
+.sidenav {
+  height: auto;
+  z-index: 999;
+  right: 0;
+  background-color: white;
+  overflow-x: hidden;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-style: inset;
+  width: 25%;
+  float: right;
+  margin-top: 20px;
+  height: 85vh;
+  margin-right: 20px;
+}
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: grey;
+} 
+
+.main {
+   /* Increased text to enable scrolling */
+  left: 0;
+  border-style: outset;
+  height: 100%;
+}
+#main{
+    width: 65%;
+    position: absolute;
+    margin-top: 20px;
+    height: auto;
+    margin-left: 20px;
+}
+
+#mainDiv{
+	background-color: rgb(245,245,245);
+
+}
+#commentDiv{
+    width: 100%%;
+    height: auto;
+    min-height: 22%;
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-top: 0px;
+}
+a:hover {
+ cursor:pointer;
+}
+#delete: hover{
+
+}
+mat-card{
+	border-style: solid !important;
+	border-width: 2px;
+}
+img:hover{
+  cursor: pointer;
+}
+.wrapper {
+   position: relative;
+}
+
+#flipIcon {
+   position: absolute;
+   top: 20px;
+   left: 20px;
+}
+#helpIcon{
+  position: absolute;
+   top: 20px;
+   right: 20px;
+}
+i:hover{
+  cursor: pointer;
+}
+#flipCardButtons .btn{
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  width: 160px;
+}
+#taskInfoDiv p{
+  padding: 10px;
+}
+
+#flipCard{
+    height: 310px;
+    width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 20px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin-top: 10px;
+}
+#textCardBody{
+  background-color: white;
+}
+#heading{
+    border-bottom-style: ridge;
+    margin-top: 0px;
+    height: 100%;
+    padding-top: 20px;
+    background-color: whitesmoke;
+}
+
+</style>

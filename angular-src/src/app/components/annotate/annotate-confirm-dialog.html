@@ -1,0 +1,9 @@
+<h1 mat-dialog-title style="margin-bottom: 5px;">Are you sure?</h1>
+<mat-divider></mat-divider>
+<div style="text-align: center; margin-top: 15px; height: 60%;" mat-dialog-content>
+  <p class="lead">Once you submit this task it cannot be resubmitted</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button-stroked cdkFocusInitial [mat-dialog-close]="true" >Submit</button>
+  <button mat-button-stroked [mat-dialog-close]="false" cdkFocusInitial>Cancel</button>
+</div>

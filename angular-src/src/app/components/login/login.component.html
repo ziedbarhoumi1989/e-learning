@@ -1,0 +1,124 @@
+<ngx-flip id="loginCard"  [flip]="flipDiv">
+   <div front style="background-color: white; height: 55vh; border-style: ridge; border-radius: 20px;">
+   	<div style="text-align: center; padding-top: 5%;">
+    <h1 class="display-4">Welcome to Classroom</h1>
+    <p style="margin-left: 10%; margin-right: 10%;" class="lead">Log in to resume your Classroom experience or register an account above!</p>
+  </div>
+  <div style="text-align: center;">
+  	<button style="margin-bottom: 2%;" (click)="flipDivFunc()" class="btn btn-primary btn-lg">Log In</button>
+  	<button class="btn btn-primary btn-lg" (click)="openModal(register)">Register</button>
+  </div>
+   </div>
+
+   <div back style="background-color: white; height: 55vh; border-style: ridge; border-radius: 20px;">
+   	<div style="text-align: center; padding-top: 5%;">
+   	<h1 class="display-4">Log In</h1>
+   </div>
+<form style="margin-left: 10%; margin-right: 10%;">
+	<div class="form-group">
+		<label>Email</label>
+		<input type="text" class="form-control" [(ngModel)]="email" name="email">
+	</div>
+	<div class="form-group">
+		<label>Password</label>
+		<input type="password" class="form-control" [(ngModel)]="password" name="password">
+	</div>
+	<button type="button" (click)="onLoginSubmit()" style="margin-bottom: 2%;" class="btn btn-primary">Log In</button>
+	<button class="btn btn-primary" (click)="flipDivFunc()">Back</button>
+</form>
+   
+	</div>
+ </ngx-flip>
+
+ <ng-template #register style="background-color: whitesmoke;">
+  <div class="modal-header">
+    <h3 class="modal-title pull-left">Register</h3>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div *ngIf="regError" class="alert alert-danger">
+  <strong>Couldn't create user!</strong> Something has gone wrong with the information you have given
+</div>
+  <div class="modal-body">
+  	<form>
+	<mat-radio-group style="margin-left: 2%;" (change)="onSelectionChange($event)">
+  <mat-radio-button value="student" >Student</mat-radio-button>
+  <mat-radio-button style="margin-left: 2%;" value="teacher">Teacher</mat-radio-button>
+</mat-radio-group>
+	<div (click)="onClick()" class="form-group">
+		<label>First Name</label>
+		<div>
+		<i *ngIf="isNull(first)" class="glyphicon glyphicon-minus form-control-feedback"></i>
+		<i *ngIf="!isNull(first)" style="color: green;" class="glyphicon glyphicon-ok-circle form-control-feedback"></i>
+		<input autocomplete="off" type="text" [(ngModel)]="first" name="first" class="form-control normal">
+		</div>
+	</div>
+	<div (click)="onClick()" class="form-group">
+		<label>Last Name</label>
+		<div>
+		<i *ngIf="isNull(last)" class="glyphicon glyphicon-minus form-control-feedback"></i>
+		<i *ngIf="!isNull(last)" style="color: green;" class="glyphicon glyphicon-ok-circle form-control-feedback"></i>
+		<input autocomplete="off" type="text" [(ngModel)]="last" name="last" class="form-control normal">
+		</div>
+	</div>
+	<div (click)="onClick()" class="form-group">
+		<label>Email</label>
+		<div>
+		<i *ngIf="!validateService.validateEmail(regEmail)" class="glyphicon glyphicon-minus form-control-feedback"></i>
+		<i *ngIf="validateService.validateEmail(regEmail)" style="color: green;" class="glyphicon glyphicon-ok-circle form-control-feedback"></i>
+		<input autocomplete="off" type="text" [(ngModel)]="regEmail" name="regEmail" class="form-control normal">
+		</div>
+	</div>
+	<div (click)="onClick()" class="form-group">
+		<label>Password</label>
+		<div>
+		<i *ngIf="regPassword?.length <= 3" class="glyphicon glyphicon-minus form-control-feedback"></i>
+		<i *ngIf="regPassword?.length > 3" style="color: green;" class="glyphicon glyphicon-ok-circle form-control-feedback"></i>
+		<input autocomplete="off"  type="password" [(ngModel)]="regPassword" name="regPassword" class="form-control normal" >
+		</div>
+	</div>
+	<div (click)="onClick()" class="form-group">
+		<label>University</label>
+		<div>
+		<i *ngIf="isNull(regUniversity)" class="glyphicon glyphicon-minus form-control-feedback"></i>
+		<i *ngIf="!isNull(regUniversity)" style="color: green;" class="glyphicon glyphicon-ok-circle form-control-feedback"></i>
+		<input autocomplete="off" type="text" [(ngModel)]="regUniversity" name="regUniversity" class="form-control normal">
+		</div>
+	</div>
+
+<button (click)="onRegisterSubmit()" class="btn btn-primary">Submit</button>
+</form>
+  </div>
+</ng-template>
+
+
+<style>
+#loginCard{
+	width: 50%;
+	margin-top: 5%;
+	margin-left: 25%;
+}
+.btn-primary {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.form-control{
+	width: 85%;
+}
+i{
+	position: relative;
+	float: right;
+}
+
+.invalid{
+	border-color: red;
+}
+.valid{
+	border-color: green!important;
+}
+.normal{
+	border-color: black;
+}
+</style>

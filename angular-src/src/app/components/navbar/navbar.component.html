@@ -1,0 +1,181 @@
+<nav *ngIf="nav.visible" style="background-color: #1C56F6;" class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-left">
+            <li style="padding-top: 15px; font-family: EraserDust"><a style="font-size: 30px;" class="navbar-brand">Classroom</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a *ngIf="authService.loggedIn()"[routerLinkActive]="['active']" [routerLink]="['/dashboard']" matTooltip="Dashboard"><i class="glyphicon glyphicon-th-list"></i></a></li>
+            <li>
+              <a *ngIf="authService.loggedIn()" matTooltip="Classes"  mat-button [matMenuTriggerFor]="classMenu">
+              <i class="fa fa-mortar-board"></i></a>
+              <mat-menu #classMenu="matMenu">
+                <div *ngIf="classes.length > 0">
+                <a style="color: black;" mat-menu-item *ngFor="let class of classes" [routerLinkActive]="['active']" [routerLink]="['/classroom/',class.module_code]" (click)="storeCode(class.module_code, class.teacher)">{{class?.title}}</a></div>
+                <div style="text-align: center;" *ngIf="classes.length == 0">
+                  <h4>You are not enrolled in any classes!</h4>
+                </div>
+              </mat-menu>
+            </li>
+            <li *ngIf="authService.loggedIn()" style=" cursor: pointer;">
+              <a mat-button [matMenuTriggerFor]="userMenu" matTooltip="User Information"><i class="glyphicon glyphicon-user"></i></a>
+              <mat-menu (click)="$event.stopPropagation()" #userMenu="matMenu" style="height: 300px; max-width: 300px; overflow-x: hidden; overflow-y: hidden; padding-top: 0px;">
+                <div style="height: 250px">
+                <mat-list (click)="$event.stopPropagation()" *ngIf="!isEditable" style="height: 200px; width: 200px;">
+                  <mat-list-item>
+                    <div style="width: 45%;">
+                    First
+                    </div> 
+                    <div style="width: 55%;">
+                    {{first}}
+                  </div>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <div style="width: 45%;">
+                    last
+                    </div> 
+                    <div style="width: 55%;">
+                    {{last}}
+                  </div>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <div style="width: 45%">
+                    Email
+                    </div>
+                    <div style="width: 55%">
+                     {{user?.email}}
+                   </div>
+                 </mat-list-item>
+                  <mat-list-item>
+                  <div style="width: 45%">
+                  Role
+                  </div>
+                  <div style="width: 55%">
+                   {{user?.role}}
+                 </div>
+                 </mat-list-item>
+                  <mat-list-item>
+                  <div style="width: 45%">
+                  School
+                  </div>
+                  <div style="width: 55%">
+                   {{user?.university}}
+                 </div>
+               </mat-list-item>
+              </mat-list>
+
+<!--TODO: Only use the users emails to get their info instead of their first and second names. 
+  This code is for editing user details but if the users first/last name is altered this could cause problems in other parts of the application-->
+
+              <!-- <mat-list *ngIf="isEditable" style="height: 200px; width: 200px;">
+                <form [formGroup]="updateForm" (click)="$event.stopPropagation()" >
+                  <mat-list-item>
+                    <div style="width: 45%;">
+                    First
+                    </div> 
+                    <mat-form-field class="example-form-field">
+                      <input matInput type="text" placeholder="{{first}}" formControlName="first" (click)="$event.stopPropagation()">
+                      <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                      </mat-form-field>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <div style="width: 45%;">
+                    Last
+                    </div> 
+                    <mat-form-field class="example-form-field">
+                      <input matInput type="text" placeholder="{{last}}" formControlName="last" (click)="$event.stopPropagation()">
+                      <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                      </mat-form-field>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <div style="width: 45%">
+                    Email
+                    </div>
+                   <div style="width: 55%">
+                   {{user?.email}}
+                 </div>
+                 </mat-list-item>
+                  <mat-list-item>
+                  <div style="width: 45%">
+                  Role
+                  </div>
+                  <div style="width: 55%">
+                   {{user?.role}}
+                 </div>
+                 </mat-list-item>
+                  <mat-list-item>
+                  <div style="width: 45%">
+                  School
+                  </div>
+                   <div style="width: 55%">
+                   {{user?.university}}
+                 </div>
+               </mat-list-item>
+             </form>
+              </mat-list> -->
+
+            </div>
+           <!--  <div style="width: 100%; text-align: center;">
+              <button class="btn btn-primary" *ngIf="!isEditable" (click)="edit(); $event.stopPropagation()">Edit</button>
+               <button class="btn btn-primary" *ngIf="isEditable" (click)="edit(); $event.stopPropagation()">Ok</button>
+              </div> -->
+              </mat-menu>
+            </li>
+             <li><a *ngIf="authService.loggedIn()"(click)="onLogOutClick()" href="#" matTooltip="Log Out"><i class="glyphicon glyphicon-log-out"></i></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+ <style>   
+nav{
+  position: static;
+  min-height: 70px;
+  margin: 0;
+}  
+li{
+  padding-top: 10px;
+  list-style: none;
+  margin-right: 5px;
+}
+a{
+  font-size: 20px;
+  color: #ffffff;
+}
+a:hover{
+  font-weight: bolder;
+  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+nav ul{
+  list-style: none;
+}
+.navbar-header a, .navbar-left a, .navbar-right a, li {
+  color: white;
+}
+i{
+  font-size: 30px;
+}
+mat-menu{
+  width: 450px !important;
+}
+.mat-list-item{
+  height: 45px !important;
+}
+mat-form-field{
+  margin-left: 10px;
+  padding-bottom: 0px;
+  width: 70%;
+}
+
+</style>

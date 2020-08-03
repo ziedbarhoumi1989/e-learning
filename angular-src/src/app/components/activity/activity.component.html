@@ -1,0 +1,226 @@
+<style>
+
+#flipCard{
+    height: 310px;
+    width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 20px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin-top: 10px;
+}
+#flipCardButtons .btn{
+  display: block;
+  width: 160px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#flipCardButtons{
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+.wrapper {
+   position: relative;
+}
+
+.wrapper .glyphicon {
+   position: absolute;
+   top: 20px;
+   left: 20px;
+}
+i:hover{
+  cursor: pointer;
+}
+
+.img-thumbnail , img :hover{
+  cursor: pointer;
+}
+.sidenav {
+  height: auto;
+  position: absolute;
+  z-index: 999;
+  top: 5;
+  right: 0;
+  background-color: white;
+  overflow-x: hidden;
+  padding-left: 30px;
+  border-style: inset;
+  margin: 20px;
+}
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: grey;
+}
+
+.main {
+  margin: 20px;
+   /* Increased text to enable scrolling */
+  left: 0;
+  border-style: outset;
+  height: 100%;
+}
+#main{
+      position: absolute;
+    width: 60%;
+    height: auto;
+}
+
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+body{
+  font-size: 18px;
+  background-color: rgb(245,245,245)!important;
+}
+.mat-card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 40%;
+  border-radius: 5px;
+  border-style: ridge;
+}
+
+.mat-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+img {
+  border-radius: 5px 5px 0 0;
+  margin-left: 15%;
+}
+#sideListItem {
+    display: block;
+    height: auto;
+    min-height: 50px;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    padding: 0;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: gainsboro;
+}
+</style>
+
+<body>
+
+<mat-card style="width: 35%; padding-left: 5px;" id="side" class="sidenav">
+  <div>
+    <h4>Tasks
+      <div *ngIf="!teacher" style="float: right;">Completed: {{submissionArray.length}}/{{activity?.tasks.length}}</div>
+    </h4>
+</div>
+<mat-divider></mat-divider>
+  <mat-list role="list" style="text-transform: capitalize; height: 100%; padding-top: 0;">
+  <mat-list-item *ngFor="let task of activity?.tasks; let i = index;" id="sideListItem" style="padding-top: 6%;" role="listitem">
+    <div style="width: 100%;">
+    {{task.task_name}}
+  </div>
+  <div *ngIf="!teacher">
+    <i *ngIf="!checkSubmitted(task.task_name)" class="glyphicon glyphicon-unchecked"></i>
+    <i *ngIf="checkSubmitted(task.task_name)" class="glyphicon glyphicon-check" style="color: limegreen;"></i>
+  </div>
+  </mat-list-item>
+</mat-list>
+</mat-card>
+
+
+  <mat-card  class="main" id="main">
+  <mat-tab-group (selectedTabChange)="tabChange($event)">
+    <mat-tab *ngFor="let task of activity?.tasks; let i = index;" label="{{task.task_name}}">
+     <!--  <div style="float: right;">Annotations Submitted: {{taskCompletedCount}}</div> -->
+      <br>
+
+      
+        <div class="card-body" *ngIf="task.task_type == 'image'">
+      <ngx-flip id="flipCard" [flip]="flipDiv">
+         <div class="wrapper" front style="height: 310px; background-color: white; border-style: ridge; text-align: center;">
+            <img style="width: 500px; height: 300px; margin-left: 0;" src="/api/image/{{dynamicURL}}" (click)="openPreviewDialog()" class="img-thumbnail">
+            <i matTooltip="Flip" (click)="flipDivFunc()" style="font-size: 25px; font-weight: bolder;" class="glyphicon glyphicon-refresh"></i>
+          </div>
+         <div class="wrapper" style="height: 300px; background-color: whitesmoke; border-style: ridge; text-align: center;" back>
+          <div id="taskInfoDiv" style="text-align: left; font-size: 18px; margin-bottom: 10%;">
+            <h3 style="margin-left: 5px;">{{task.task_name}}</h3>
+            <mat-divider></mat-divider>
+          </div>
+          <div>
+            <blockquote style="margin-left: 10px; text-align: center; font-size: 28px;"><i>{{task.task_desc}}</i></blockquote>
+          </div>
+        <div id="flipCardButtons" >
+          <a class="btn btn-primary" *ngIf="checkSubmitted(task.task_name) &&!teacher" href="/view/annotations/{{email}}/{{activityname}}/{{task.task_name}}">View Submission</a>
+        <a href="/annotate/{{activity.activityType}}/{{activityname}}/{{task.task_name}}" class="btn btn-primary" *ngIf="!checkSubmitted(task.task_name) && !teacher">Annotate</a>
+        <div *ngIf="teacher">
+        <button class="btn btn-primary" [matMenuTriggerFor]="menu">View Submissions</button>
+    <mat-menu #menu="matMenu">
+      <div *ngIf="classSubmissionArray.length > 0">
+      <a *ngFor="let submission of classSubmissionArray" href="view/annotations/{{submission.email}}/{{activityname}}/{{task.task_name}}" mat-menu-item>{{submission.name.first}} {{submission.name.last}}</a>
+    </div>
+    <p style="font-size: 20px; text-align: center;" *ngIf="classSubmissionArray.length == 0">No submissions have been made yet!</p>
+    </mat-menu>
+  </div>
+
+        <button class="btn btn-danger" (click)="flipDivFunc()">Back</button>
+        </div>
+      </div>
+       </ngx-flip>
+
+</div>
+
+  <div class="card" *ngIf="task.task_type == 'text'" style="border-style: none;">
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <p><i [innerHTML]="task.task_desc"></i></p>
+    </blockquote>
+  </div>
+<div *ngIf="!checkSubmitted(task.task_name) && !teacher" style="margin-top: 15%;" >
+     <app-ngx-editor [config]="editorConfig" height="100px" minHeight="100px" [placeholder]="placeholder" [spellcheck]="true" [(ngModel)]="htmlContent" name="htmlContent"></app-ngx-editor>
+     <div>
+   <button *ngIf="htmlContent" type="button" class="btn btn-primary" style="float: right;" (click)="onAnswerSubmit(task.task_name,htmlContent)">Submit</button>
+   <button *ngIf="!htmlContent" type="button" class="btn btn-primary" style="float: right;" (click)="empty()">Submit</button>
+   <button type="button" class="btn btn-warning" style="float: right;" (click)="clear()">Clear</button>
+  </div>
+   </div>
+   <div *ngIf="checkSubmitted(task.task_name) && !teacher">
+    <blockquote class="blockquote mb-0">
+      <p [innerHTML]="dynamicContent"></p>
+    </blockquote>
+    <div style="text-align: center;">
+     <p>You have already submitted this task</p>
+     <a type="button" [routerLink]="['/classroom/',module]" *ngIf="checkAllAns()" class="btn btn primary">Back to Classroom</a>
+   </div> 
+ </div>
+
+ <div *ngIf="teacher">
+    <blockquote class="blockquote mb-0">
+      <p [innerHTML]="dynamicStudentSubmission"></p>
+    </blockquote>
+ </div>
+
+ <div style="width: 100%; text-align: center;">
+ <button class="btn btn-primary" [matMenuTriggerFor]="menu" *ngIf="teacher">View Submissions</button>
+    <mat-menu #menu="matMenu">
+      <div *ngIf="classSubmissionArray.length > 0">
+      <div *ngFor="let submission of classSubmissionArray">
+      <button (click)="showStudentSubmission(submission.content)" mat-menu-item *ngIf="submission.taskTitle == task.task_name">{{submission.name.first}} {{submission.name.last}}</button>
+    </div>
+    </div>
+    <p style="font-size: 20px; text-align: center;" *ngIf="classSubmissionArray.length == 0">No submissions have been made yet!</p>
+    </mat-menu>
+  </div>
+</div>
+
+    </mat-tab>
+</mat-tab-group>
+  
+</mat-card>
+</body>

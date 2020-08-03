@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '@fortawesome/fontawesome-free/css/all.css';
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+     z-index: 99999;
+     position: fixed;
+  }
+ .modal-dialog {
+    width: 700px;
+    margin: 0 auto;
+    height: 300px;
+ }
+ html{
+ 	background-color: rgb(245,245,245);
+  height: 100%;
+ }
+ .ngx-editor[_ngcontent-c6] .ngx-wrapper[_ngcontent-c6] .ngx-editor-textarea[_ngcontent-c6]{
+ 	min-height: 200px;
+ 	height: 100px;
+ }
+  .body[_ngcontent-c0]{
+  	width: 100%;
+  	padding-right: 0px!important;
+    padding-left: 0px!important;
+  }
+  body{
+    background-color: rgb(245,245,245);
+  }
+  .mat-pseudo-checkbox-checked::after {
+  width: 10px !important;
+  height: 5px !important;
+}
+@font-face {
+  font-family: EraserDust;
+  src: url(assets/EraserDust.ttf) format("truetype");
+}
+@font-face {
+  font-family: DK Cool Crayon;
+  src: url(assets/DKCoolCrayon.ttf) format("truetype");
+}
+
+
+.custom-dialog-container .mat-dialog-container {
+    padding: 0px;
+    overflow-x: hidden;
+}

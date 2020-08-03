@@ -1,0 +1,12 @@
+
+<h1 mat-dialog-title style="margin-bottom: 5px;">Your Task</h1>
+<mat-divider></mat-divider>
+<div style="text-align: center; margin-top: 15px; height: 60%;" mat-dialog-content>
+
+  <div *ngIf="data">
+  <p class="lead">{{data.tasks}}</p>
+</div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button-stroked mat-dialog-close cdkFocusInitial>Ok</button>
+</div>

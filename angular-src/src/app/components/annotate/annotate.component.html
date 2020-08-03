@@ -1,0 +1,114 @@
+<html>
+   <body>
+ <mat-drawer-container style="width: 100%; height: 100%;" class="example-container" autosize [hasBackdrop]="true">
+  <mat-drawer style="width: 350px; overflow-y: hidden;" #drawer class="example-sidenav" mode="over">
+    <h3 style="text-align: center;">Feedback</h3>
+    <div style="padding-left: 10px; padding-right: 10px; border-style: ridge;">
+      <p style="text-transform: capitalize;">Student: {{studentString}}</p>
+  <p>Annotation: {{annoText}}</p>
+</div>
+<div *ngIf="!isFeedbackSubmitted">
+  <app-ngx-editor [config]="editorConfig" height="350px" minHeight="100px" [placeholder]="placeholder" [spellcheck]="true" [(ngModel)]="htmlContent" name="htmlContent"></app-ngx-editor>
+  <button *ngIf="htmlContent" type="button" class="btn btn-primary" style="float: right;" (click)="submitFeedback(htmlContent)">Submit</button>
+   <button *ngIf="!htmlContent" type="button" class="btn btn-primary" style="float: right;" (click)="empty()">Submit</button>
+   <button type="button" class="btn btn-warning" style="float: right;" (click)="clear()">Clear</button>
+ </div>
+   <div *ngIf="isFeedbackSubmitted" style="padding-right: 10px; padding-left: 10px;">
+  <p style="text-transform: capitalize;">{{user?.name.first}} {{user?.name.last}} says:</p>
+  <p>{{dynamicFeedbackStr}}</p>
+</div>
+  </mat-drawer> 
+
+
+  <mat-drawer-content id="drawerContent">
+   <div style="margin-top: 2%;">
+  <div id="imageContainer" style="text-align: center;">
+    <div style="float: left;">
+    <button matTooltip="Go Back" (click)="backClicked()" mat-stroked-button><i class="glyphicon glyphicon-arrow-left"></i></button>
+    <button matTooltip="Lock Annotations" *ngIf="!submitted" mat-stroked-button (click)="lockWidget()"><i class="glyphicon glyphicon-lock"></i></button>
+    <!--  <button style="float: right;" type="button" mat-stroked-button (click)="toggleSideNav()"><i class="glyphicon glyphicon-menu-hamburger"></i></button> -->
+     <button matTooltip="Make Annotatable" *ngIf="!submitted" mat-stroked-button (click)="showWidget()"><i class="fas fa-unlock"></i></button>
+     <button matTooltip="Submit" *ngIf="!submitted" mat-stroked-button (click)="openConfirmDialog()"><i class="glyphicon glyphicon-ok"></i></button>
+     <button matTooltip="Task" mat-stroked-button (click)="openTaskDialog()"><i class="glyphicon glyphicon-question-sign"></i></button>
+  </div>
+    <img style="width: 1000px; height: 600px; border-style: ridge; border-width: 2px;" id="image" src={{url}} attr.data-original="{{dataOriginal}}" />
+  </div>
+</div>
+</mat-drawer-content>
+
+</mat-drawer-container>
+</body>
+  
+<style>
+#imageDiv{
+  width: 60%
+}
+
+body{
+  background-color: rgb(245,245,245)!important;
+  height: 100vh;
+}
+html{
+  height: 100%;
+  overflow-y: hidden;
+}
+.example-container {
+  width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+}
+
+.example-sidenav {
+     overflow-y: hidden;
+    padding-bottom: 20px;
+}
+#mainDiv{
+    height: 100%;
+    width: 100%;
+    padding-top: 20px;
+}
+.sidenav {
+  min-height: 90%;
+  width: 25%;
+  position: absolute;
+  z-index: 999;
+  top: 5;
+  left: 0;
+  background-color: white;
+  overflow-x: hidden;
+  padding-right: 0px;
+  border-style: inset;
+  margin: 20px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+}
+#drawerContent button{
+  width: 35px;
+  height: 35px;
+  margin-right: 5px;
+}
+#imageContainer{
+  position: fixed;
+    left: 50%;
+    width: 1000px;
+    margin-left: -500px;
+    height: 600px;
+}
+i{
+  font-size: 25px;
+}
+p::first-letter {
+  text-transform: uppercase;
+}
+
+</style>
